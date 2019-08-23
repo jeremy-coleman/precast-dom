@@ -1,0 +1,351 @@
+import { BLUE, YELLOW, PURPLE } from "./colors";
+import { ABOUT_POPUP_ID, CLOSE_BUTTON_ID, GITHUB_BUTTON_ID, AboutPopup } from "./components/AboutPopup";
+import React from "react";
+import { Emitter } from "raycast";
+import { CIRCLE_ID_PREFIX, Circle } from "./components/Circle";
+import { EXAMPLE_POPUP_ID, ExamplePopup } from "./components/ExamplePopup";
+import CircleOps from "./CircleOps";
+import { NEW_BUTTON_ID, CLEAR_BUTTON_ID, OPEN_BUTTON_ID, STAR_BUTTON_ID, BottomToolbar } from "./components/BottomToolbar";
+import { render } from "react-dom";
+import { CursorOverlay } from "./components/CursorOverlay";
+import { Logo } from "./components/Logo";
+import { Svg } from "./components/Svg";
+import { TextRotator } from "./components/TextRotator";
+
+
+
+let defaultState = {
+  circles: [
+      {
+          x: 150, y: 500, r: 100, color: BLUE
+      },
+      {
+          x: 700, y: 250, r: 150, color: YELLOW
+      },
+      {
+          x: 800, y: 700, r: 80, color: PURPLE
+      }
+  ],
+  hoveredCircleIndex: -1,
+  selectedCircleIndex: -1,
+  draggedCircleIndex: -1,
+  popupVisible: ABOUT_POPUP_ID as string | boolean,
+  mousePosition: {
+      x: 0,
+      y: 0
+  },
+  mouseIsDown: false,
+  isTouch: false,
+  dragOrigin: undefined as any,
+  delta: undefined as any
+};
+
+export const App = props => {
+    let canvasRef = React.useRef<any>()
+    let rootRef = React.useRef<any>()
+
+    let [state, setState] = React.useState(defaultState)
+
+
+        // Raycast Emitter subscription
+        Emitter.getInstance().connect({
+            onMouseOver: onMouseOver.bind(this), // circle mouse over
+            onMouseOut: onMouseOut.bind(this), // circle mouse out
+            onMouseMove: onMouseMove.bind(this), // drawing circles with Alt key
+            onMouseDown: onMouseDown.bind(this), // drawing circles
+            onMouseUp: onMouseUp.bind(this), // stop drawing circles with Alt key
+            onClick: onClick.bind(this), // button clicks
+            onKeyDown: onKeyDown.bind(this), // stop dragging
+            onKeyUp: onKeyUp.bind(this), // closing dialog
+            onTouchStart: onTouchStart.bind(this), // new circle
+            onTouchEnd: onTouchEnd.bind(this),
+            onTouchMove: onTouchMove.bind(this)
+        });
+    
+
+    function onMouseOver(ray) {
+        var circle = ray.intersectsId(CIRCLE_ID_PREFIX),
+            circleId, circleIndex;
+
+        if (circle) {
+            // circle mouse over
+            circleId = circle.id;
+            circleIndex = parseInt(circleId.split(CIRCLE_ID_PREFIX)[1]);
+            setState({...state, hoveredCircleIndex: circleIndex});
+        }
+    }
+
+    function onMouseOut(ray) {
+        var circle = ray.intersectsId(CIRCLE_ID_PREFIX);
+
+        if (circle) {
+            // circle mouse over
+            setState({...state,
+                hoveredCircleIndex: -1
+            });
+        }
+    }
+
+
+    function handleMouseOrTouchDown(ray, isTouch?) {
+        var self = this
+        var circle
+        var circleId
+        var circleIndex
+
+         // immediately reset cursor overlay
+        setState({...state,mouseIsDown: true,
+            isTouch
+        });
+
+        // popup is visible
+        if (state.popupVisible) { 
+            if (!ray.intersectsId(EXAMPLE_POPUP_ID) && !ray.intersectsId(ABOUT_POPUP_ID)) { // clicked outside the popup
+                setState({
+                    ...state,
+                    popupVisible: false
+                });
+            }
+            return; // return because popup currently visible
+        }
+
+        if (!ray.intersects(canvasRef.current)) {
+            return; // clicked outside the canvas
+        }
+
+        circle = ray.intersectsId(CIRCLE_ID_PREFIX);
+
+        // circle mouse down
+        if (circle) { 
+            circleId = circle.id;
+            circleIndex = parseInt(circleId.split(CIRCLE_ID_PREFIX)[1]);
+            setState({
+                ...state,
+                selectedCircleIndex: circleIndex,
+                draggedCircleIndex: circleIndex,
+                dragOrigin: ray.position
+            }), 
+            function() {
+                executeCommand('bring-to-front');
+                selectCircleOnTop();
+            };
+            return;
+        }
+
+        // canvas mouse down
+        setState({
+            ...state,
+            mousePosition: ray.position,
+            selectedCircleIndex: -1,
+            draggedCircleIndex: -1
+        }), 
+
+        function() {
+             // Shift + click = clear screen
+            if (ray.e.shiftKey) {
+                executeCommand('clear');
+            }
+            // create new circle
+            executeCommand('new-circle'); 
+            // select it
+            selectCircleOnTop(); 
+        };
+    }
+
+    function onMouseDown(ray) {
+        handleMouseOrTouchDown(ray);
+    }
+
+    function onTouchStart(ray) {
+        var touch = ray.e.changedTouches[0];
+
+        ray.position = {
+            x: touch.clientX,
+            y: touch.clientY
+        };
+        handleMouseOrTouchDown(ray, true);
+    }
+
+    function handleMouseOrTouchUp(ray, isTouch?) {
+        if (state.delta) {
+            // save positions
+            CircleOps.executeCommand('move', state.circles, null, state.delta);
+        }
+        setState({
+            ...state,
+            mouseIsDown: false,
+            draggedCircleIndex: -1,
+            delta: null
+        });
+    }
+
+    function onMouseUp(ray) {
+        handleMouseOrTouchUp(ray);
+    }
+
+    function onTouchEnd(ray) {
+        handleMouseOrTouchUp(ray, true);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Mouse/touch move">
+    function handleMouseOrTouchMove(ray, isTouch?) {
+        var self = this,
+            position = ray.position;
+
+        // nothing to do here
+        if (!state.mouseIsDown) {
+            return; 
+        }
+
+        // Alt + mouse move = new circle
+        if (!isTouch && ray.e.altKey && ray.intersects(rootRef.current)) { 
+            setState({
+                ...state,
+                mousePosition: position
+            })
+            executeCommand('new-circle');
+            return;
+        }
+
+        // clicking and dragging a single circle moves all the circles
+        if (state.draggedCircleIndex > -1) {
+            setState({
+                ...state,
+                delta: Point.fromObject(position).subtract(state.dragOrigin)
+            });
+        }
+    }
+
+    function onMouseMove(ray) {
+        handleMouseOrTouchMove(ray);
+    }
+
+    function onTouchMove(ray) {
+        var touch = ray.e.changedTouches[0];
+
+        ray.position = {
+            x: touch.clientX,
+            y: touch.clientY
+        };
+        handleMouseOrTouchMove(ray, true);
+        ray.preventDefault(); // don't bounce the screen on iOS
+    }
+    //</editor-fold>
+
+    function onClick(ray) {
+        var self = this;
+
+        if (ray.intersectsId(NEW_BUTTON_ID)) {
+            executeCommand('random-circle');
+        } else if (ray.intersectsId(CLEAR_BUTTON_ID)) {
+            executeCommand('clear');
+        } else if (ray.intersectsId(OPEN_BUTTON_ID)) {
+            setState({
+              ...state,
+                popupVisible: EXAMPLE_POPUP_ID
+            });
+        } else if (ray.intersectsId(CLOSE_BUTTON_ID)) {
+            setState({
+                ...state,
+                popupVisible: false
+            });
+        } else if (ray.intersectsId(GITHUB_BUTTON_ID)) {
+            window.open(GITHUB_URL, '_blank');
+        } else if (ray.intersectsId(STAR_BUTTON_ID)) {
+            window.open(STARS_URL, '_blank');
+        }
+    }
+
+    function onKeyDown(ray) {
+        if (ray.e.key === 'Escape') { // stop dragging circles
+            setState({
+                ...state,
+                draggedCircleIndex: -1,
+                delta: null
+            });
+        }
+    }
+
+ // close the popup
+    function onKeyUp(ray) {
+        if (ray.e.key === 'Escape') {
+            setState({
+              ...state,
+                popupVisible: false
+            });
+        }
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Circles & commands">
+    function selectCircle(circleElement) {
+        //@ts-ignore
+        state.selectedCircleIndex = getCircleId(circleElement);
+    }
+
+    function selectCircleOnTop() {
+        setState({
+            ...state,
+            selectedCircleIndex: state.circles.length - 1
+        });
+    }
+
+    const executeCommand = (command) => {
+        var position, circles;
+
+        position = state.mousePosition;
+        circles = CircleOps.executeCommand(command, state.circles, state.selectedCircleIndex, position);
+        setState({...state, circles});
+    }
+
+
+        var self = this
+        var delta = state.delta
+        var index = 0
+
+        var circles = state.circles.map(function (item) {
+                var id = CIRCLE_ID_PREFIX + index,
+                    coords, circle;
+
+                    if (delta) {
+                        coords = Point.fromObject(item).add(delta).toObject();
+                    }
+
+                    circle = (
+                        <Circle {...item} {...coords}
+                            id={id}
+                            key={id}
+                            strokeColor='white'
+                            hovered={state.hoveredCircleIndex === index}
+                            selected={state.selectedCircleIndex === index} />
+                    );
+
+                index++;
+                return circle;
+            }),
+            popup = state.popupVisible === ABOUT_POPUP_ID && (
+                <AboutPopup />
+            ) || state.popupVisible === EXAMPLE_POPUP_ID && (
+                    <ExamplePopup />
+                ),
+            cursorOverlay = state.mouseIsDown && !state.isTouch && state.draggedCircleIndex > -1 && (
+                <CursorOverlay />
+            );
+
+       
+        return (
+            <div ref={rootRef}>
+                <div ref={canvasRef} className='container'>
+                    <Logo />
+                    <Svg width='100%' height='100%'>
+                        {circles}
+                    </Svg>
+                    <TextRotator />
+                </div>
+                <BottomToolbar />
+                {popup}
+                {cursorOverlay}
+            </div>
+        );
+    }

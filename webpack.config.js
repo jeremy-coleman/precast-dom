@@ -10,7 +10,7 @@ const remarkHighlight = require('remark-highlight.js')
 //const Prism = require('./vendor/prism')
 
 
-const ENTRY_FILE = './src/index.jsx'
+const ENTRY_FILE = './src/index.tsx'
 const HTML_TEMPLATE = "./src/index.html"
 
 
@@ -72,8 +72,8 @@ module.exports = {
       {test: /\.svg(\?.*)?$/,use: {loader: 'file-loader',options: {name: 'images/[name].[ext]',mimetype: 'image/svg+xml'}}},
       {test: /\.(png|jpg)(\?.*)?$/,use: {loader: 'file-loader',options: {name: 'images/[name].[ext]'}}},
       {test: /\.less(\?.*)?$/, use: [
-        //{loader:'style-loader'},
-        //{loader:'css-loader'},
+        {loader:'style-loader'},
+        {loader:'css-loader'},
         {loader: 'less-loader',options: {javascriptEnabled: true}}
       ]},
       // {

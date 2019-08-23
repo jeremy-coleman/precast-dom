@@ -27,6 +27,7 @@ function sendToBack(circles, circle, current) {
 }
 
 function newCircle(position, circles, yOrigin) {
+    console.log('new circle')
     var r = Math.floor(Math.random() * 150) + 50,
         color = COLORS[Math.floor(Math.random() * COLORS.length)],
         circle = {
@@ -67,7 +68,7 @@ function clear(circles) {
     circles.splice(0, circles.length);
 }
 
-export default class CircleOps {
+export class CircleOps {
 
     //<editor-fold desc="Circles & commands">
     static executeCommand(command, circles, current, position) {

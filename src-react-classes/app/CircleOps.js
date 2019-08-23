@@ -27,6 +27,7 @@ function sendToBack(circles, circle, current) {
 }
 
 function newCircle(position, circles, yOrigin) {
+    console.log('new circle')
     var r = Math.floor(Math.random() * 150) + 50,
         color = COLORS[Math.floor(Math.random() * COLORS.length)],
         circle = {
