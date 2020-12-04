@@ -6,7 +6,7 @@ function toFields(val) {
 
 class WebpackModules {
 	apply(compiler) {
-		compiler.hooks.environment.tap('webpack-modules', () => {
+		compiler.hooks.environment.tap('webpack-es-modules', () => {
 			const { target, module, resolve } = compiler.options;
 			compiler.options.module = Object.assign({ rules:[] }, module);
 			compiler.options.resolve = Object.assign({ mainFields: toFields(target) }, resolve);

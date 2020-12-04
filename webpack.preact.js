@@ -1,6 +1,6 @@
 const path = require("path")
 const webpack = require("webpack")
-//const PreactRefreshPlugin = require("@prefresh/webpack")
+const PreactRefreshPlugin = require("@prefresh/webpack")
 const {TsconfigPathsPlugin} = require("tsconfig-paths-webpack-plugin")
 const HtmlWebpackPlugin = require("./tools/html-webpack5-plugin")
 
@@ -23,7 +23,8 @@ module.exports = {
   resolve: {
     extensions: [".jsx", ".js", ".json", ".mjs", ".ts", ".tsx"],
     alias: {
-      "react-dom": "@hot-loader/react-dom"
+      "react": "preact/compat",
+      "react-dom": "preact/compat"
     },
 
     plugins: [new TsconfigPathsPlugin()]
@@ -112,7 +113,7 @@ module.exports = {
     ]
   },
   plugins: [
-    //new PreactRefreshPlugin(),
+    new PreactRefreshPlugin(),
     new webpack.DefinePlugin({
       "process.env": {NODE_ENV: JSON.stringify(process.env.NODE_ENV || "development")}
     }),
