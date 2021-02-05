@@ -37,7 +37,7 @@ export function evaluateClassName(sub, element) {
  * @param element DOM element
  * @returns {*|boolean}
  */
-export function equalID(id: HTMLElement["id"], element: HTMLElement) {
+export function equalID (id: HTMLElement["id"], element: HTMLElement) {
     return id === element.id;
 }
 

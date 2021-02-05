@@ -1,25 +1,35 @@
-const express = require('express');
-const path = require('path');
-const webpack = require('webpack');
-const config = require('./webpack.config');
-const app = express();
+var { sucrasify, hmr } = require("./tools");
 
-const compiler = webpack(config);
+var BrowserifyMiddleware = require("./tools/browserify-middleware");
+const { createServer, static_middleware } = require("./tools/http-server");
 
-//app.use(express.static("public"));
+var app = createServer();
 
-app.use(require('./tools/webpack-dev-middleware')(compiler, {
-    publicPath: config.output.publicPath,
-}));
+BrowserifyMiddleware.settings({
+  cache: {},
+  packageCache: {},
+  debug: true,
+  sourceMaps: false,
+  extensions: [".ts", ".tsx", ".js", ".jsx"],
+  plugin: [[hmr]],
+  transform: [[sucrasify.configure({ hot: true })]],
+});
 
-app.use(require("./tools/webpack-hot-middleware")(compiler));
+app.use(static_middleware("src"));
+app.get("/main.js", BrowserifyMiddleware.middleware(__dirname + "/src/index.tsx"));
 
-app.listen(8888, () => {
-    console.log('listening on http://localhost:8888')
-})
+app.listen(8001, "localhost", function () {
+  console.log("Listening on http://localhost:8001/");
+});
 
 
-// app.use('/api', function(req, res) {
-//     res.header("Content-Type",'application/json');
-//     res.sendFile(path.join(__dirname, './api/data.json'));  
-// });
+// [
+//   aliasify.configure({
+//     aliases: {
+//       react: "preact/compat",
+//       "react-dom": "preact/compat",
+//     },
+//     appliesTo: { includeExtensions: [".js", ".jsx", ".tsx", ".ts"] },
+//   }),
+//   { global: true },
+// ],

@@ -1,5 +1,5 @@
-import PropTypes from "prop-types"
-import React from "react"
+//import PropTypes from "prop-types"
+import React from "preact/compat"
 
 export const EXAMPLE_POPUP_ID = "example-popup"
 
@@ -44,10 +44,10 @@ export const AboutPopup = (props) => {
           </div>
           <div className="popup-dialog-footer">
             <button className="toolbar-button" id={GITHUB_BUTTON_ID}>
-              <span className="fa fa-github-alt"></span>&nbsp;&nbsp;Go to GitHub
+              <span className="fa fa-github-alt"></span> Go to GitHub
             </button>
             <button className="toolbar-button" id={CLOSE_BUTTON_ID}>
-              <span className="fa fa-close"></span>&nbsp;&nbsp;Close
+              <span className="fa fa-close"></span> Close
             </button>
           </div>
         </div>
@@ -60,13 +60,13 @@ export const BottomToolbar = (props) => {
   return (
     <div className="toolbar toolbar-bottom">
       <button id={CLEAR_BUTTON_ID} className="toolbar-button">
-        <i className="fa fa-remove"></i>&nbsp;&nbsp;Clear
+        <i className="fa fa-remove"></i> Clears
       </button>
       <button id={NEW_BUTTON_ID} className="toolbar-button">
-        <i className="fa fa-plus-circle"></i>&nbsp;&nbsp;New circle
+        <i className="fa fa-plus-circle"></i> New circle
       </button>
       <button id={OPEN_BUTTON_ID} className="toolbar-button">
-        <i className="fa fa-info-circle"></i>&nbsp;&nbsp;Open popup
+        <i className="fa fa-info-circle"></i> Open popup
       </button>
       <button id={STAR_BUTTON_ID} className="toolbar-button toolbar-button-right">
         <i className="fa fa-star"></i>
@@ -89,13 +89,13 @@ export const Circle = (props) => {
   return <circle {...config} id={props.id} />
 }
 
-Circle.propTypes = {
-  id: PropTypes.string.isRequired,
-  strokeColorSelected: PropTypes.string,
-  strokeColorHovered: PropTypes.string,
-  selected: PropTypes.bool,
-  hovered: PropTypes.bool
-}
+// Circle.propTypes = {
+//   id: PropTypes.string.isRequired,
+//   strokeColorSelected: PropTypes.string,
+//   strokeColorHovered: PropTypes.string,
+//   selected: PropTypes.bool,
+//   hovered: PropTypes.bool
+// }
 
 Circle.defaultProps = {
   strokeColorSelected: "white",
@@ -125,7 +125,7 @@ export const ExamplePopup = (props) => {
           </div>
           <div className="popup-dialog-footer">
             <button className="toolbar-button" id={CLOSE_BUTTON_ID}>
-              <span className="fa fa-close"></span>&nbsp;&nbsp;Close
+              <span className="fa fa-close"></span>Close
             </button>
           </div>
         </div>

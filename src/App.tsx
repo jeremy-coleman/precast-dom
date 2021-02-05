@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component} from "preact/compat"
 import {Emitter} from "./Raycast";
 import {
   AboutPopup,
@@ -20,9 +20,16 @@ import {
   TextRotator,
 } from "./components";
 
-import "./main.css";
+//import "./main.css";
+
+//global
 
 
+process.nextTick(() => console.log("nextTick!"))
+console.log(__filename)
+console.log(__dirname)
+
+// process.env
 const GITHUB_URL = "https://github.com/dkozar/raycast-dom";
 const STARS_URL = GITHUB_URL + "/stargazers";
 

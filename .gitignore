@@ -1,7 +1,8 @@
 /node_modules
+/_unused
 /.pnp
 .pnp.js
-
+/zzz
 # testing
 /coverage
 
@@ -18,9 +19,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-zzz
-
-
-
-  git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
+/zzz
