@@ -1,5 +1,5 @@
 {
-	"compilerOptions" : {
+	"compilerOptions": {
 		"outDir": "_never",
 		"declaration": false,
 		"jsx": "react",
@@ -7,13 +7,20 @@
 		"allowSyntheticDefaultImports": true,
 		"allowJs": true,
 		"checkJs": true,
-		"lib": ["dom", "esnext"],
-		"target":"esnext",
+		"lib": [
+			"dom",
+			"esnext"
+		],
+		"target": "esnext",
 		"module": "esnext",
 		"baseUrl": "./src",
 		"experimentalDecorators": true,
 		"skipLibCheck": true
 	},
-	"include": ["src"],
-  "exclude": ["node_modules"]
+	"include": [
+		"src"
+	],
+	"exclude": [
+		"node_modules"
+	]
 }

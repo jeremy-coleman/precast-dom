@@ -1,0 +1,61 @@
+{
+    "telemetry.enableTelemetry": false,
+    "telemetry.enableCrashReporter": false,
+    "editor.emptySelectionClipboard": false,
+    "editor.highlightActiveIndentGuide": false,
+    "editor.renderLineHighlight": "none",
+    "editor.matchBrackets": "near",
+    "editor.renderIndentGuides": false,
+    "explorer.compactFolders": false,
+    "explorer.openEditors.visible": 0,
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "explorer.decorations.badges": false,
+    "explorer.decorations.colors": false,
+    "workbench.tree.renderIndentGuides": "none",
+    "workbench.colorTheme": "One Dark Pro",
+    "workbench.iconTheme": "material-icon-theme",
+    "material-icon-theme.showWelcomeMessage": false,
+    "npm.enableRunFromFolder": true,
+    "workbench.startupEditor": "newUntitledFile",
+    "javascript.updateImportsOnFileMove.enabled": "never",
+    "files.autoSave": "afterDelay",
+    "material-icon-theme.hidesExplorerArrows": true,
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "explorer.incrementalNaming": "smart",
+    "editor.occurrencesHighlight": false,
+    "workbench.editor.closeOnFileDelete": true,
+    "typescript.updateImportsOnFileMove.enabled": "never",
+    "js-index.defaultTemplate": "export * from ${relpath};",
+    "editor.semanticHighlighting.enabled": false,
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.minimap.enabled": false,
+    "git.allowForcePush": true,
+    "scm.diffDecorations": "none",
+    "extensions.ignoreRecommendations": true,
+    "git.decorations.enabled": false,
+    "git.autorefresh": false,
+    "editor.hover.delay": 500,
+    "workbench.enableExperiments": false,
+    "debug.javascript.codelens.npmScripts": "never",
+    "editor.fontFamily": "Fira Code",
+    "editor.fontLigatures": true,
+    "editor.suggest.showSnippets": false,
+    "editor.autoClosingBrackets": "never",
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}
