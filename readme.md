@@ -1,5 +1,8 @@
-#update and preact/react comparison using https://github.com/dkozar/raycast-dom as a fixture
-
 #instructions
-try recording both (in prod mode) for 20s in devtools while holding alt + left click to generate circles. React ends almost exactly 2x as many DOM nodes.
-note, react is unusable in dev mode
+node start and open
+hold alt + left click to create some circles
+edit the bottom buttons in ~/src/components around line 60 to check if HMR is working
+if it isn't working correctly, the circles will reset and the entry modal will re-appear, otherwise it should hot update
+
+thanks https://github.com/dkozar/raycast-dom 
+
