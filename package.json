@@ -1,24 +1,9 @@
 {
   "name": "@preact/workspace",
   "private": true,
-  "zscripts": {
-    "start1": "webpack serve",
-    "serve": "serve dist/app",
-    "start:react": "webpack --config=webpack.react.js",
-    "tscheck": "tsc -p tsconfig.json --outDir _checked",
-    "dist": "webpack --config=webpack.prod.js --mode production --optimize-minimize",
-    "start": "webpack --config=webpack.config.js",
-    "prod": "cross-env NODE_ENV=production wp --config ./webpack.config",
-    "pretest": "npm run lint",
-    "test": "lerna run test",
-    "prettier": "prettier --write **/*.{js,ts,tsx,json,css,scss,md,yml}",
-    "lint": "eslint .",
-    "lintfix": "eslint --fix",
-    "less": "lessc src"
-  },
   "scripts": {
-    "dist": "webpack --config=webpack.production.js --mode production --optimize-minimize",
-    "start": "webpack --config=webpack.config.js"
+    "dist": "node start --build",
+    "start": "node start --serve"
   },
   "prettier": {
     "arrowParens": "always",
